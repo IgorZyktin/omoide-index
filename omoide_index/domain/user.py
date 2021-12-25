@@ -5,20 +5,20 @@
 from pydantic import BaseModel
 
 __all__ = [
-    'RefreshUserModel',
-    'DropUserModel',
+    'UserRefreshModel',
+    'UserDropModel',
     'UserActionModel',
 ]
 
 
-class RefreshUserModel(BaseModel):
+class UserRefreshModel(BaseModel):
     """Comes with command for refresh."""
     user_uuid: str
     refresh_all: bool
     refresh_items: list[str]
 
 
-class DropUserModel(BaseModel):
+class UserDropModel(BaseModel):
     """Comes with command for deletion."""
     user_uuid: str
 
