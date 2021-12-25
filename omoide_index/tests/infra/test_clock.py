@@ -16,20 +16,6 @@ def infra_clock_instance():
     return Clock()
 
 
-def test_clock_now(infra_clock_instance):
-    # arrange
-    inst = infra_clock_instance
-    ref = datetime(2021, 12, 25, 14, 29).replace(tzinfo=timezone.utc)
-
-    # act
-    with mock.patch('omoide_index.infra.clock.datetime') as fake_datetime:
-        fake_datetime.utcnow.return_value = ref
-        res = inst.now()
-
-    # assert
-    assert res == ref
-
-
 def test_clock_now_str(infra_clock_instance):
     # arrange
     inst = infra_clock_instance
@@ -45,15 +31,15 @@ def test_clock_now_str(infra_clock_instance):
     assert res == ref_str
 
 
-def test_clock_delta(infra_clock_instance):
+def test_clock_delta_str(infra_clock_instance):
     # arrange
     inst = infra_clock_instance
     before = datetime(2021, 12, 25, 14, 29, 24).replace(tzinfo=timezone.utc)
     after = datetime(2021, 12, 25, 14, 48, 13).replace(tzinfo=timezone.utc)
-    ref = 1_129
+    ref = '18m 49s'
 
     # act
-    res = inst.delta_sec(before, after)
+    res = inst.delta_str(before, after)
 
     # assert
     assert res == ref

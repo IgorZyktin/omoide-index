@@ -40,9 +40,15 @@ class Clock(domain_infra.AbstractClock):
         """
         return str(moment)
 
-    def delta_sec(self, before: datetime, after: datetime) -> int:
+    def delta(self, before: datetime, after: datetime) -> int:
         """Return difference in time as integer seconds."""
         return int((after - before).total_seconds())
+
+    def delta_str(self, before: datetime, after: datetime) -> str:
+        """Return difference in time as human readable string."""
+        return self.format_human_readable_duration(
+            seconds=self.delta(before, after),
+        )
 
     def format_human_readable_duration(self, seconds: int) -> str:
         """Format interval as human readable description.

@@ -36,8 +36,12 @@ class AbstractClock(abc.ABC):
         """
 
     @abc.abstractmethod
-    def delta_sec(self, before: datetime, after: datetime) -> int:
+    def delta(self, before: datetime, after: datetime) -> int:
         """Return difference in time as integer seconds."""
+
+    @abc.abstractmethod
+    def delta_str(self, before: datetime, after: datetime) -> str:
+        """Return difference in time as human readable string."""
 
     @abc.abstractmethod
     def format_human_readable_duration(self, seconds: int) -> str:
