@@ -38,7 +38,7 @@ def quietly_reload_index_on_start(index: domain.Index,
     config = infra.Config()
 
     if config.is_on('OMOIDE_INDEX_RELOAD_ON_START'):
-        use_cases.RebuildIndexUseCase(
+        use_cases.ReloadIndexUseCase(
             index=index,
             status=status,
             clock=infra.Clock(),
@@ -112,11 +112,12 @@ def search_items_for_user(
         index: domain.Index = fastapi.Depends(get_index),
 ) -> domain.SearchResult:
     """Perform search on the in-memory database."""
-
     if query:
-        result = use_cases.SearchRandomItemsUseCase(query, index).execute()
+        result = use_cases.SearchRandomItemsUseCase(query=query,
+                                                    index=index).execute()
     else:
-        result = use_cases.SearchSpecificItemsUseCase(query, index).execute()
+        result = use_cases.SearchSpecificItemsUseCase(query=query,
+                                                      index=index).execute()
 
     return result
 
@@ -127,13 +128,13 @@ def reload_index(
         status: domain.Status = fastapi.Depends(get_status),
 ) -> domain.IndexActionModel:
     """Reload whole index silently, so users wont notice."""
-    # TODO --------------------------------------------------------------------
-    assert index
-    assert status
-    # TODO --------------------------------------------------------------------
-    return domain.IndexActionModel(
-        action='reloading index',
-    )
+    use_cases.ReloadIndexUseCase(index=index,
+                                 status=status,
+                                 clock=infra.Clock(),
+                                 memory_calculator=infra.MemoryCalculator(),
+                                 version=__version__).execute()
+
+    return domain.IndexActionModel(action='reloading index')
 
 
 @app.post('/refresh')
@@ -143,45 +144,41 @@ def partially_refresh_index(
         status: domain.Status = fastapi.Depends(get_status),
 ) -> domain.IndexActionModel:
     """Reload some parts of the index silently, so users wont notice."""
-    # TODO --------------------------------------------------------------------
-    assert model
-    assert index
-    assert status
-    # TODO --------------------------------------------------------------------
-    return domain.IndexActionModel(
-        action='refreshing index',
-    )
+    use_cases.RefreshIndexUseCase(model=model,
+                                  index=index,
+                                  status=status,
+                                  clock=infra.Clock(),
+                                  memory_calculator=infra.MemoryCalculator(),
+                                  version=__version__).execute()
+
+    return domain.IndexActionModel(action='refreshing index')
 
 
 @app.post('/user')
 def refresh_user(
-        model: domain.RefreshUserModel,
+        model: domain.UserRefreshModel,
         index: domain.Index = fastapi.Depends(get_index),
         status: domain.Status = fastapi.Depends(get_status),
 ) -> domain.UserActionModel:
     """Update or create records for this user."""
-    # TODO --------------------------------------------------------------------
-    assert index
-    assert status
-    # TODO --------------------------------------------------------------------
-    return domain.UserActionModel(
-        user_uuid=model.user_uuid,
-        action='refreshing user',
-    )
+    use_cases.RefreshUserUseCase(model=model,
+                                 index=index,
+                                 status=status).execute()
+
+    return domain.UserActionModel(user_uuid=model.user_uuid,
+                                  action='refreshing user')
 
 
 @app.delete('/user')
 def drop_user(
-        model: domain.DropUserModel,
+        model: domain.UserDropModel,
         index: domain.Index = fastapi.Depends(get_index),
         status: domain.Status = fastapi.Depends(get_status),
 ) -> domain.UserActionModel:
     """Delete all records for this user."""
-    # TODO --------------------------------------------------------------------
-    assert index
-    assert status
-    # TODO --------------------------------------------------------------------
-    return domain.UserActionModel(
-        user_uuid=model.user_uuid,
-        action='deleting user',
-    )
+    use_cases.DropUserUseCase(model=model,
+                              index=index,
+                              status=status).execute()
+
+    return domain.UserActionModel(user_uuid=model.user_uuid,
+                                  action='deleting user')
