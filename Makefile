@@ -4,7 +4,6 @@ SHELL:=/usr/bin/env bash
 lint:
 	poetry run mypy omoide_index tests/**/*.py
 	poetry run flake8 .
-	poetry run doc8 -q docs
 
 .PHONY: unit
 unit:
