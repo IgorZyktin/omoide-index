@@ -1,0 +1,82 @@
+###
+
+GET http://localhost:9000/
+Accept: application/json
+
+###
+
+GET http://localhost:9000/status
+Accept: application/json
+
+###
+
+POST http://localhost:9000/reload
+
+###
+
+POST http://localhost:9000/refresh
+Content-Type: application/json
+
+{}
+
+###
+
+POST http://localhost:9000/user
+Content-Type: application/json
+
+{
+    "user_uuid": "e1e977fa-b58b-458a-85e9-0a65df46aef4",
+    "refresh_all": false,
+    "refresh_items": [
+        "01fd7287-4db1-4c2d-a3d6-01995349e32f",
+        "03a26e29-3273-4766-8885-1fc3584d240e",
+        "04137754-90cc-404e-9b8f-928f1ab27889"
+    ]
+}
+
+###
+
+DELETE http://localhost:9000/user
+Content-Type: application/json
+
+{
+    "user_uuid": "e1e977fa-b58b-458a-85e9-0a65df46aef4"
+}
+
+###
+
+GET http://localhost:9000/search
+Content-Type: application/json
+
+{
+    "user_uuid": "e1e977fa-b58b-458a-85e9-0a65df46aef4",
+    "tags_and": [
+        "movie"
+    ],
+    "tags_or": [
+        "matrix"
+    ],
+    "tags_not": [
+        "matrix 4"
+    ],
+    "page": 1,
+    "items_per_page": 10,
+    "themes": null
+}
+
+###
+
+GET http://localhost:9000/search
+Content-Type: application/json
+
+{
+    "user_uuid": "e1e977fa-b58b-458a-85e9-0a65df46aef4",
+    "tags_and": [
+    ],
+    "tags_or": [
+    ],
+    "tags_not": [
+    ],
+    "page": 1,
+    "items_per_page": 10,
+}
