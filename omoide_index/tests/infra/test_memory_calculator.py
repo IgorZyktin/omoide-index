@@ -13,18 +13,6 @@ def infra_memory_calculator_instance():
     return MemoryCalculator()
 
 
-def test_memory_calculator_consumption(infra_memory_calculator_instance):
-    # arrange
-    inst = infra_memory_calculator_instance
-    ref = 10 * 10 ** 6
-
-    # act
-    res = inst.get_process_memory_consumption()
-
-    # assert
-    assert res >= ref
-
-
 def test_memory_calculator_consumption_str(infra_memory_calculator_instance):
     # arrange
     inst = infra_memory_calculator_instance
@@ -50,9 +38,25 @@ def test_memory_calculator_consumption_str(infra_memory_calculator_instance):
     (100_000_000_000, '93.1 GiB'),
     (100_000_000_000_000, '90.9 TiB'),
 ])
-def test_clock_human_readable_duration(size, string):
+def test_memory_calculator_human_readable_size(size, string):
     # arrange
     inst = MemoryCalculator()
 
     # assert
     assert inst.format_human_readable_size(size) == string
+
+
+@pytest.mark.parametrize('target,string', [
+    (True, '32 B'),
+    (False, '24 B'),
+    (None, '16 B'),
+    (1, '32 B'),
+    ((1, 2, 3), '160 B'),
+    ((1, 2, (3, 4, (5, 6))), '376 B'),
+])
+def test_memory_calculator_object_consumption(target, string):
+    # arrange
+    inst = MemoryCalculator()
+
+    # assert
+    assert inst.get_object_memory_consumption_str(target) == string
